@@ -31,7 +31,8 @@ def get_db():
 def read_movies(skip: Optional[int] = 0, limit: Optional[int] = 10000, db: Session = Depends(get_db)):
     # read items from database
     movies = crud.get_movies(db, skip=skip, limit=limit)
-    # return them as json
+    if movies is None:
+        raise HTTPException(status_code=404, detail="Movie to read not found")
     return movies
 
 @app.get("/movies/by_id/{movie_id}", response_model=schemas.Movie)
