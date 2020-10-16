@@ -17,24 +17,32 @@ def get_movie(db: Session, movie_id: int):
     # read from the database (get method read from cache)
     # return object read or None if not found
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
-    logger.error("Movie retrieved from DB: {} ; director: {}".format(
-              db_movie.title,
-              db_movie.director.name if db_movie.director is not None else "no director"))
-    return db_movie;
+    if db_movie is None:
+        return None
+    return db_movie
 
 def get_movies(db: Session, skip: int = 0, limit: int = 10000):
-    return db.query(models.Movie).offset(skip).limit(limit).all()
+    db_movie = db.query(models.Movie).offset(skip).limit(limit).all()
+    if db_movie is None:
+        return None
+    return db_movie
 
 
 def get_star(db: Session, star_id: int):
     # read from the database (get method read from cache)
     # return object read or None if not found
-    return db.query(models.Star).filter(models.Star.id == star_id).first()
+    db_movie = db.query(models.Star).filter(models.Star.id == star_id).first()
+    if db_movie is None:
+        return None
+    return db_movie
     #return db.query(models.Star).get(1)
     #return schemas.Star(id=1, name="Fred")
 
 def get_stars(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Star).offset(skip).limit(limit).all()
+    db_movie = db.query(models.Star).offset(skip).limit(limit).all()
+    if db_movie is None:
+        return None
+    return db_movie
 
 def _get_stars_by_predicate(*predicate, db: Session):
     return db.query(models.Star).filter(*predicate)
